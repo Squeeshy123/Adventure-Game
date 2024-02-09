@@ -12,7 +12,7 @@ function init(){
 
 function submit_clicked() {
     create_option(text_box.value)
-    print_line_to_log(text_box.value)
+    print_to_log(text_box.value)
 }
 
 function create_option(button_text){
