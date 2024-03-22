@@ -21,6 +21,7 @@ function create_option(button_text){
     var new_option = document.createElement("button")
     options_box.appendChild(new_option)
     new_option.innerText = button_text
+    return new_option
 }
 
 function clear_options(){
@@ -35,11 +36,22 @@ function chooseEvent() {
             current_number = 2
             break;
         case 2:
-            line = "You try to exit your room"
+            line = "You exit your room"
             break;
         
     }
     print_line_to_log(line)
+    if(current_number == 2) {
+        var button1 = create_option("Shower")
+        button1.addEventListener("click", function(){ 
+            line = "You take a nice long (10 minute) shower, and slip some of the soap into your bag."
+            print_line_to_log(line)
+            button1.remove
+        })
+    }
+
+
+    
 }
 function print_to_log(text) {
     adventure_log.innerHTML = text
