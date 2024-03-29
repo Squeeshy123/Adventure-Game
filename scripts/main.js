@@ -33,6 +33,13 @@ class RandomChanceMinigame extends Minigame {
     }
 }
 
+class TimeCounter extends Minigame {
+    constructor(){
+        
+    }
+}
+
+
 var options_box 
 var text_box
 var current_number
