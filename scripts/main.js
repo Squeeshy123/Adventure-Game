@@ -1,8 +1,43 @@
 window.onload = init;
 
+// Classes: PascalCase
+// Everything else: snake_case
+
+class Scene {
+    constructor(option_sets, set_index) {
+
+    }
+    generate_scene
+    next_scene(){
+        set_index+=1
+        clear_options()
+        create_option_set(option_sets[set_index])
+    }
+    set_scene_index(new_index) {
+        set_index=new_index
+        clear_options()
+        create_option_set(option_sets[set_index])
+    }
+}
+
+class Minigame {
+}
+
+class RandomChanceMinigame extends Minigame {
+    constructor(percent_chance, win_phrase, lose_phrase) {
+        if (percent_chance <= Math.random() * 100){ // if we win
+            print_line_to_log(win_phrase)
+        } else {
+            print_line_to_log(lose_phrase)
+        }
+    }
+}
+
 var options_box 
 var text_box
 var current_number
+
+var options = ['wake up','','']
 
 function init(){
     options_box = document.getElementById("options_box")
@@ -13,20 +48,32 @@ function init(){
 
 
 function submit_clicked() {
-    create_option(text_box.value)
-    chooseEvent()
+    var c = create_option(text_box.value)
+    c.addEventListener("click", function(){clear_options()})
+    //choose_event()
+    var r = new RandomChanceMinigame(50, "YOU WIN!", "YOU'RE A LOSER!")
+
 }
 
 function create_option(button_text){
     var new_option = document.createElement("button")
     options_box.appendChild(new_option)
     new_option.innerText = button_text
+    return new_option
+}
+
+function create_option_set(options_texts) {
+    clear_options()
+    options_texts.forEach(element => {
+        create_option(element);
+    });
 }
 
 function clear_options(){
-    
+    options_box.innerHTML = ''
 }
-function chooseEvent() {
+
+function choose_event() {
     var line
     switch(current_number)
     {
@@ -37,7 +84,6 @@ function chooseEvent() {
         case 2:
             line = "You try to exit your room"
             break;
-        
     }
     print_line_to_log(line)
 }
