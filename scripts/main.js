@@ -25,10 +25,56 @@ class Scene {
         
     }*/
 }
+var already_showered = false
+var already_brushed = false
+var already_ate = false
 class MorningScene extends Scene {
     constructor(next_scene){
         super(next_scene)
     }
+    start_scene() {
+        if(!already_showered && !already_ate && !already_brushed) {
+        print_line_to_log("You have work soon, and you must get ready. You can leave now, or do some morning routines.")
+        }
+        if(already_ate && already_brushed && already_showered) {
+            print_line_to_log("You finished everything you can do right now.")
+            switch_scenes("garage")
+
+        }
+        if(already_showered == false) {
+            var shower_button = create_option("Take a shower")
+            shower_button.addEventListener("click", function() {
+                print_line_to_log("You take a nice long (10 minute) shower, and slip some soap into your bag.")
+                already_showered = true
+                switch_scenes("MorningScene")
+
+            })
+        }
+        if(already_ate == false) {
+            var breakfast_button = create_option("Have some breakfast")
+            breakfast_button.addEventListener("click", function() {
+                print_line_to_log("You eat breakfast for 10 minutes, and grab a bagel for lunch.")
+                already_ate = true
+                switch_scenes("MorningScene")
+            })
+        }
+        if(already_brushed == false) {
+            var teeth_button = create_option("Brush your teeth")
+            teeth_button.addEventListener("click", function(){
+                print_line_to_log("You brush your teeth for the full 2 minutes. Your breath no longer smells.")
+                already_brushed = true;
+                switch_scenes("MorningScene")
+            })
+        }
+        var end_button = create_option("Head out early")
+        end_button.addEventListener("click", function(){
+            print_line_to_log("Got here")
+            switch_scenes("garage")
+        })
+
+        
+    }
+    
 }
 class BedScene extends Scene {
     constructor() {
@@ -43,6 +89,7 @@ class BedScene extends Scene {
                 r = new RandomChanceMinigame(50, 
                 "You successfully get out of bed!", 
                 "You try to get out of bed, but you fall back asleep.")
+                
                 if (r.passed) {
                     switch_scenes("MorningScene")
                 } else{
@@ -146,28 +193,7 @@ function clear_options(){
     options_box.innerHTML = ''
 }
 
-function choose_event() {
-    var line
-    switch(current_number)
-    {
-        case 1:
-            line = "You wake up in your room"
-            current_number = 2
-            break;
-        case 2:
-            line = "You exit your room"
-            break;
-    }
-    print_line_to_log(line)
-    if(current_number == 2) {
-        var button1 = create_option("Shower")
-        button1.addEventListener("click", function(){ 
-            line = "You take a nice long (10 minute) shower, and slip some of the soap into your bag."
-            print_line_to_log(line)
-            button1.remove
-        })
-    }
-}
+
 
 function print_to_log(text) {
     adventure_log.innerHTML = text
