@@ -58,7 +58,6 @@ class Minigame {
 }
 
 class RandomChanceMinigame extends Minigame {
-<<<<<<< Updated upstream
     passed;
     constructor(percent_chance, win_phrase, lose_phrase) {
         super()
@@ -67,28 +66,12 @@ class RandomChanceMinigame extends Minigame {
         if (percent_chance <= chance) { // if we win
             print_line_to_log(win_phrase)
             this.passed = true
-=======
-    
-    constructor(percent_chance, win_phrase, lose_phrase) {
-        this.did_win = 0
-        if (percent_chance <= Math.random() * 100){ // if we win
-            print_line_to_log(win_phrase)
-            did_win = 1
->>>>>>> Stashed changes
         } else {
             print_line_to_log(lose_phrase)
         }
     }
-<<<<<<< Updated upstream
     get_passed(){
         return this.passed
-=======
-    return_win () {
-        if(this.did_win == 1) {
-            return true;
-        }
-        return false;
->>>>>>> Stashed changes
     }
 }
 
@@ -141,17 +124,7 @@ function submit_clicked() {
     var c = create_option(text_box.value)
     c.addEventListener("click", function(){clear_options()})
     //choose_event()
-<<<<<<< Updated upstream
     
-=======
-    var r = new RandomChanceMinigame(50, "YOU WIN!", "YOU'RE A LOSER!")
-    if(r.return_win()) {
-        choose_event()
-        line = "Worked"
-        print_line_to_log(line)
-    }
-
->>>>>>> Stashed changes
 }
 
 function create_option(button_text){
@@ -159,7 +132,6 @@ function create_option(button_text){
     options_box.appendChild(new_option)
     new_option.innerText = button_text
     return new_option
-<<<<<<< Updated upstream
 }
 
 function create_option_set(options_texts) {
@@ -168,8 +140,6 @@ function create_option_set(options_texts) {
         create_option(element);
     });
     return new_option
-=======
->>>>>>> Stashed changes
 }
 
 function clear_options(){
