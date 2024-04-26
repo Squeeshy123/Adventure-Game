@@ -1,7 +1,15 @@
 window.onload = init;
 
+class SignalManager {
+    constructor(){
+
+    }
+
+}
+
 // Classes: PascalCase
 // Everything else: snake_case
+// All classes should have a suffix of the class they extend
 
 class Scene {
     constructor(next_scene) {
@@ -122,7 +130,7 @@ class RandomChanceMinigame extends Minigame {
     }
 }
 
-class TimeCounter extends Minigame {
+class TimeCountdownMinigame extends Minigame {
     constructor(){
 
     }
@@ -132,12 +140,13 @@ class TimeCounter extends Minigame {
 var options_box 
 var text_box
 var current_number
+var time_counter_text
 
 
 var options = ['wake up','','']
 
 
-var bed_scene = "BedScene"
+var bed_scene = ""
 
 var current_scene_string = bed_scene
 var current_scene_obj 
@@ -156,23 +165,26 @@ function switch_scenes(new_scene){
     current_scene_obj.start_scene()
 }
 
+var started_game = false
+function start_game(){
+    if (!started_game){
+        started_game = true
+    }
+    time_counter_text.innerText = performance.now()
+    print_line_to_log("clicked")
+    switch_scenes("BedScene")
+}
+
 function init(){
     options_box = document.getElementById("options_box")
     text_box = document.getElementById("user_input")
     adventure_log = document.getElementById("adventure_log")
+    time_counter_text = document.getElementById("timer_text")
+    let start_button = document.getElementById("start_game")
+    start_button.addEventListener("click", function(){start_game()})
     current_number = 1
-
-    switch_scenes("BedScene")
-    
 }
 
-
-function submit_clicked() {
-    var c = create_option(text_box.value)
-    c.addEventListener("click", function(){clear_options()})
-    //choose_event()
-    
-}
 
 function create_option(button_text){
     var new_option = document.createElement("button")
