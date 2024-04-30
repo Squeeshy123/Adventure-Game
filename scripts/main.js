@@ -7,6 +7,21 @@ class SignalManager {
 
 }
 
+class GameTimerManager {
+    time;
+    constructor(){
+
+    }
+    start_timer(){
+        setInterval(() => {
+            time_counter_text.innerText = eval(time_counter_text.innerText) + 1
+        }, 1000);
+    }
+    add_seconds(increment) {
+        time_counter_text.innerText = eval(time_counter_text.innerText) + increment
+    }
+}
+
 // Classes: PascalCase
 // Everything else: snake_case
 // All classes should have a suffix of the class they extend
@@ -77,8 +92,8 @@ class MorningScene extends Scene {
         var end_button = create_option("Head out early")
         end_button.addEventListener("click", function(){
             print_line_to_log("Got here")
-            switch_scenes("garage")
-        })
+            switch_scenes("LeavingAppartmentScene")
+        })  
 
         
     }
@@ -96,7 +111,11 @@ class BedScene extends Scene {
             {
                 r = new RandomChanceMinigame(50, 
                 "You successfully get out of bed!", 
-                "You try to get out of bed, but you fall back asleep.")
+                "You try to get out of bed, but you fall back asleep.", 
+                function(){},
+                function(){
+                    game_timer_manager.add_seconds(5)
+                })
                 
                 if (r.passed) {
                     switch_scenes("MorningScene")
@@ -108,21 +127,59 @@ class BedScene extends Scene {
         )
     }
 }
+class LeavingAppartmentScene extends Scene {
+    constructor(next_scene){
+        super(next_scene)
+    }
+    start_scene(){
+        print_line_to_log("Alright, time to head to work!")
+        print_line_to_log("Although, when you were partying last night, the last person to leave slammed the door too hard and knocked over your bookshelf, and it's blocking the door.")
+        var try_to_move = create_option("Try to lift the bookshelf out of the way.")
+        try_to_move.addEventListener("click", function(){
+            var r = new RandomChanceMinigame(20, 
+                "You successfully move the bookshelf just enough to get out the door!", 
+                "You fail to move the bookshelf, and now your sciatica is acting up.", 
+                function(){}, function(){}
+            )
+        })
+        var out_the_window = create_option("Try to leave through the window.")
+        var checked_window = false
+        out_the_window.addEventListener("click", function(){
+            if (!checked_window) {
+                var catapult = create_option("Catapult")
+                catapult.addEventListener("click", function(){
+
+                })
+                var window = create_option("Window")
+                window.addEventListener("click", function(){
+                    
+                })
+                checked_window = true
+            }
+        })
+        var answer_mail = create_option("Look through your mail instead")
+        answer_mail.addEventListener("click", function(){
+            print_line_to_log("Just some overdue bills.")
+        })
+    }
+}
 
 class Minigame {
 }
 
 class RandomChanceMinigame extends Minigame {
     passed;
-    constructor(percent_chance, win_phrase, lose_phrase) {
+    constructor(percent_chance, win_phrase, lose_phrase, win_func, lose_func) {
         super()
         this.passed = false
         var chance = Math.random() * 100
         if (percent_chance <= chance) { // if we win
             print_line_to_log(win_phrase)
+            win_func()
             this.passed = true
         } else {
             print_line_to_log(lose_phrase)
+            lose_func()
         }
     }
     get_passed(){
@@ -153,6 +210,8 @@ var current_scene_obj
 
 var next_scene = "MorningScene"
 
+var game_timer_manager = new GameTimerManager()
+
 function load_current_scene() {
     clear_options()
     console.log("new " + current_scene_string + "()")
@@ -170,7 +229,8 @@ function start_game(){
     if (!started_game){
         started_game = true
     }
-    time_counter_text.innerText = performance.now()
+    time_counter_text.innerText = '0'
+    game_timer_manager.start_timer()
     print_line_to_log("clicked")
     switch_scenes("BedScene")
 }
