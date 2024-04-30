@@ -1,10 +1,24 @@
 window.onload = init;
-
+var states_box
 class SignalManager {
     constructor(){
 
     }
 
+}
+class StateManager {
+    states = new Array()
+    update_states(){
+        states_box.innerHTML = '';
+        for (const i in this.states) {
+            var j = new Text(i);
+            states_box.appendChild(j);
+        }
+    }
+    add_state(new_state) {
+        states.push(new_state)
+        this.update_states
+    }
 }
 
 class GameTimerManager {
@@ -57,17 +71,19 @@ class MorningScene extends Scene {
     }
     start_scene() {
         if(!already_showered && !already_ate && !already_brushed) {
-        print_line_to_log("You have work soon, and you must get ready. You can leave now, or do some morning routines.")
+            print_line_to_log("You have work soon, and you must get ready. You can leave now, or do some morning routines.")
         }
         if(already_ate && already_brushed && already_showered) {
-            print_line_to_log("You finished everything you can do right now.")
-            switch_scenes("garage")
+            print_line_to_log("You finished everything you can do right now, time to get going!")
+            switch_scenes("LeavingApartmentScene")
 
         }
         if(already_showered == false) {
             var shower_button = create_option("Take a shower")
             shower_button.addEventListener("click", function() {
                 print_line_to_log("You take a nice long (10 minute) shower, and slip some soap into your bag.")
+                game_timer_manager.add_seconds(10)
+                state_manager.add_state("Smells nice")
                 already_showered = true
                 switch_scenes("MorningScene")
 
@@ -77,6 +93,7 @@ class MorningScene extends Scene {
             var breakfast_button = create_option("Have some breakfast")
             breakfast_button.addEventListener("click", function() {
                 print_line_to_log("You eat breakfast for 10 minutes, and grab a bagel for lunch.")
+                game_timer_manager.add_seconds(10)
                 already_ate = true
                 switch_scenes("MorningScene")
             })
@@ -86,13 +103,15 @@ class MorningScene extends Scene {
             teeth_button.addEventListener("click", function(){
                 print_line_to_log("You brush your teeth for the full 2 minutes. Your breath no longer smells.")
                 already_brushed = true;
+                
+                game_timer_manager.add_seconds(2)
+                
                 switch_scenes("MorningScene")
             })
         }
         var end_button = create_option("Head out early")
         end_button.addEventListener("click", function(){
-            print_line_to_log("Got here")
-            switch_scenes("LeavingAppartmentScene")
+            switch_scenes("LeavingApartmentScene")
         })  
 
         
@@ -127,32 +146,47 @@ class BedScene extends Scene {
         )
     }
 }
-class LeavingAppartmentScene extends Scene {
+class LeavingApartmentScene extends Scene {
+    moved_shelf = false;
     constructor(next_scene){
         super(next_scene)
+    }
+    leave_through_door_button(){
+        
+
     }
     start_scene(){
         print_line_to_log("Alright, time to head to work!")
         print_line_to_log("Although, when you were partying last night, the last person to leave slammed the door too hard and knocked over your bookshelf, and it's blocking the door.")
         var try_to_move = create_option("Try to lift the bookshelf out of the way.")
         try_to_move.addEventListener("click", function(){
+            game_timer_manager.add_seconds(1)
             var r = new RandomChanceMinigame(20, 
                 "You successfully move the bookshelf just enough to get out the door!", 
                 "You fail to move the bookshelf, and now your sciatica is acting up.", 
-                function(){}, function(){}
+                function(){
+                    var t = create_option("Leave through door")
+                    t.addEventListener("click", function(){switch_scenes("Transportation")})
+                    try_to_move.parentNode.removeChild(try_to_move);}, 
+                    function(){
+                        try_to_move.parentNode.removeChild(try_to_move);
+                    }
             )
         })
+        
         var out_the_window = create_option("Try to leave through the window.")
         var checked_window = false
         out_the_window.addEventListener("click", function(){
+            out_the_window.disabled = true
             if (!checked_window) {
-                var catapult = create_option("Catapult")
+                var catapult = create_option("Use the Catapult left from the party")
                 catapult.addEventListener("click", function(){
-
-                })
-                var window = create_option("Window")
-                window.addEventListener("click", function(){
                     
+                })
+                var window = create_option("Jump through the window")
+                window.addEventListener("click", function(){
+                    // What should happen here?
+                    var r = new RandomChanceMinigame(25, "You successfully plummet into the dumpster")
                 })
                 checked_window = true
             }
@@ -160,10 +194,13 @@ class LeavingAppartmentScene extends Scene {
         var answer_mail = create_option("Look through your mail instead")
         answer_mail.addEventListener("click", function(){
             print_line_to_log("Just some overdue bills.")
+            game_timer_manager.add_seconds(5)
         })
     }
 }
-
+class Transportation extends Scene {
+    
+}
 class Minigame {
 }
 
@@ -240,6 +277,10 @@ function init(){
     text_box = document.getElementById("user_input")
     adventure_log = document.getElementById("adventure_log")
     time_counter_text = document.getElementById("timer_text")
+    state_manager = new StateManager()
+    states_box = document.getElementById("states")
+    
+
     let start_button = document.getElementById("start_game")
     start_button.addEventListener("click", function(){start_game()})
     current_number = 1
